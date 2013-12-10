@@ -98,14 +98,15 @@ def kversion():
 ci = cpuinfo();
 kn = kversion();
 results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci};
-print "testing submit placeholder: %s"%( results );
+print "results: %s"%( results );
 
 #submit performance statistics
 if(options.submit):
+    print "submitting benchmark statistics to stats.gnuradio.org: "
     import urllib;
     uo = urllib.URLopener();
     uo.open("http://stats.gnuradio.org/submit",urllib.urlencode(results));
-
+    print "done."
 
 
 
