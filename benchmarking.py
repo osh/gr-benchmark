@@ -11,6 +11,8 @@ from gnuradio import gr
 from gnuradio.ctrlport import GNURadio
 from gnuradio import ctrlport
 
+import gr_profiler
+
 def add_argparser():
     parser = ArgumentParser(description='Benchmarking tool for GR flowgraphs')
     parser.add_argument('-F', '--file', type=str, default=None,
@@ -116,10 +118,8 @@ def main():
     find_tests = re.compile('run*')
     tpms = gr.high_res_timer_tps()/1000.0 # ticks per millisecond
 
-    procinfo = open("/proc/cpuinfo", "r")
-    procinfo = procinfo.read()
-    procver = open("/proc/version", "r")
-    procver = procver.read()
+    procinfo = gr_profiler.cpuinfo()
+    procver = gr_profiler.kversion()
     sysinfo = procinfo + procver
     #print sysinfo
 
