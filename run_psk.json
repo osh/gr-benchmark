@@ -1,6 +1,6 @@
 { 
     "directory": "bm_scripts",
-    "tests_psk": [
+    "tests": [
     {
         "module": "bm_pskmod",
         "testname": "bm_pskmod",

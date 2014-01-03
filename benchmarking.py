@@ -74,6 +74,7 @@ def main():
     parser = add_argparser()
     args = parser.parse_args()
     verbose = args.verbose
+    kwargs = {}
 
     ic = Ice.initialize(sys.argv)
 
@@ -112,8 +113,7 @@ def main():
                 script_dir = f['directory']
             except KeyError:
                 script_dir = "bm_scripts"
-        
-        tests = f['tests_psk']
+        tests = f['tests']
 
     find_tests = re.compile('run*')
     tpms = gr.high_res_timer_tps()/1000.0 # ticks per millisecond
@@ -126,9 +126,12 @@ def main():
     results = {}
 
     for t in tests:
+        test_name = t['module'] + "." + t['testname']
         qa = __import__(script_dir + '.' + t['module'], globals(), locals(), t['testname'])
         iters = t['iters']
         nitems = t['nitems']
+        if(t.has_key('kwargs')):
+            kwargs = t['kwargs']
         fresults = {}
 
         # Turn off a test by setting iters = 0
@@ -145,11 +148,11 @@ def main():
             if testf:
                 test_funcs.append(testf.string)
 
-        obj = test_suite(nitems)
+        obj = test_suite(nitems, **kwargs)
 
         # Run each test case nruns times for iters number of iterations
         for f in test_funcs:
-            print "\nRUNNING FUNCTION: ", f
+            print "\nRUNNING FUNCTION: {0}.{1}".format(test_name, f)
 
             _program_time = numpy.array(iters*[0,])
             _all_blocks_time = numpy.array(iters*[0,])
@@ -212,7 +215,6 @@ def main():
     #print ""
 
     test_suite = getattr(qa, t['testname'])
-    obj = test_suite(0)
 
     pickle.dump([sysinfo, tests, results], open(args.ofile, 'wb'))
 
