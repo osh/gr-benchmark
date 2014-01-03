@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import Ice
-import sys, re, time, random
+import sys, re, time, random, pprint
 import numpy, pylab
 import json
 import cPickle as pickle
@@ -33,7 +33,7 @@ def add_argparser():
                         help='verbosity level; 1=normal, 2=extra  [default=%(default)s]')
     return parser
 
-def get_block_times(ic):
+def get_block_times(ic, tbname):
     # Get available endpoint
     ep = gr.rpcmanager_get().endpoints()[0]
 
@@ -42,12 +42,12 @@ def get_block_times(ic):
     radio = GNURadio.ControlPortPrx.checkedCast(base)
 
     # Get all blocks with stream connections in the flowgraph
-    b = radio.getRe(["(top_block)[0-9](::edge list)"])
+    b = radio.get(["{0}::edge list".format(tbname)])
     tb_key = b.keys()[0]
     b = b[tb_key].value.split("\n")
 
     # Get all blocks with message connectiosn in flowgraph
-    mb = radio.getRe(["(top_block)[0-9](::msg edges list)"])
+    mb = radio.getRe(["{0}::msg edges list".format(tbname)])
     tb_key = mb.keys()[0]
     b += mb[tb_key].value.split("\n")
     b = filter(None, b)
@@ -125,7 +125,7 @@ def main():
 
     results = {}
 
-    for t in tests:
+    for ntest, t in enumerate(tests):
         test_name = t['module'] + "." + t['testname']
         qa = __import__(script_dir + '.' + t['module'], globals(), locals(), t['testname'])
         iters = t['iters']
@@ -150,7 +150,7 @@ def main():
 
         obj = test_suite(nitems, **kwargs)
 
-        # Run each test case nruns times for iters number of iterations
+        # Run each test case iters number of iterations
         for f in test_funcs:
             print "\nRUNNING FUNCTION: {0}.{1}".format(test_name, f)
 
@@ -170,7 +170,7 @@ def main():
 
                 _program_time[i] = _end_time - _start_time
 
-                times = get_block_times(ic)
+                times = get_block_times(ic, obj.tb._tb.alias())
 
                 if _nblocks == 0:
                     n = len(times.keys())
@@ -208,7 +208,7 @@ def main():
                 print "Ratio:         {0:.2f}".format(bt_avg/pt_avg)
             fresults[f] = (pt_min, pt_avg, pt_var, bt_min, bt_avg, bt_var,
                            _nblocks, bt_blks_min, bt_blks_avg, bt_blks_var)
-        results[t['module']] = fresults
+        results[t['testname']] = fresults
 
     #print ""
     #print results

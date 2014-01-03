@@ -4,22 +4,22 @@
     {
         "module": "bm_fir_filters",
         "testname": "fir_filters_equal",
-        "nitems": 10000,
-        "iters": 100,
+        "nitems": 100000,
+        "iters": 50,
         "kwargs": {
-            "mfirs": 4,
-            "ntaps": 100000
+            "mfirs": 8,
+            "ntaps": 10000
         }
     },
     {
         "module": "bm_fir_filters",
         "testname": "fir_filters_nonequal",
-        "nitems": 10000,
-        "iters": 100,
+        "nitems": 100000,
+        "iters": 50,
         "kwargs": {
-            "mfirs": 4,
-            "ntaps": 1000,
-            "mult": 100
+            "mfirs": 8,
+            "ntaps": 10000,
+            "mult": 10
         }
     }
 ]
