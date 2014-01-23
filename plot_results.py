@@ -22,10 +22,10 @@ class plotter:
         self.fignum = fignum
         self.title = self.extract_title(test)
 
-        module_name = test['module']
-        self.v = v = results[module_name].values()
-
-        self.labels = results[module_name].keys()
+        self.v = v = results.values()
+        #print v
+        
+        self.labels = results.keys()
         self.pt_mins = numpy.array([vi[0] for vi in v])
         self.pt_avgs = numpy.array([vi[1] for vi in v])
         self.pt_stddev = numpy.array([numpy.sqrt(vi[2]) for vi in v])
@@ -58,8 +58,8 @@ class plotter:
         self.sp2.set_yticklabels(self.labels, fontweight='bold')
         self.sp2.legend()
 
-        self.cid = plt.connect('button_release_event',
-                               self.mouse_button_callback)
+        self.cid = self.fig.canvas.mpl_connect('button_release_event',
+                                               self.mouse_button_callback)
 
     def extract_title(self, test):
         '''
@@ -83,7 +83,6 @@ class plotter:
         if y is not None:
             dist = [abs(y-a) for a in self.sp1.get_yticks()]
             index = dist.index(min(dist))
-
             v = self.v[index]
             self.plot_blocks(v)
 
@@ -127,7 +126,7 @@ def main():
     plots = []
     for t in tests:
         nfigs += 1
-        plots.append(plotter(t, results, nfigs))
+        plots.append(plotter(t, results[t['testname']], nfigs))
 
     plt.show(block=True)
 
