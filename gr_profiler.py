@@ -138,7 +138,7 @@ def main():
     # first run volk tests
     if(options.dv):
         print "executing volk_profile ..."
-        perf = shellexec_getout(["volk_profile","-b","1"]);
+        perf = shellexec_getout("volk_profile -b 1");
     else:
         perf = "";
 
