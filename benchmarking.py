@@ -13,6 +13,11 @@ from gnuradio import ctrlport
 
 import gr_profiler
 
+# force controlport export configuration on at startup 
+for (cat,opt) in [("ControlPort","on"), ("ControlPort","edges_list"), ("PerfCounters","on"), ("PerfCounters","export")]:
+    gr.prefs().singleton().set_bool(cat,opt,True);
+
+
 def add_argparser():
     parser = ArgumentParser(description='Benchmarking tool for GR flowgraphs')
     parser.add_argument('-F', '--file', type=str, default=None,
