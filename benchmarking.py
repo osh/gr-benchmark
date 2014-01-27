@@ -157,7 +157,7 @@ def main():
 
         # Run each test case iters number of iterations
         for f in test_funcs:
-            print "\nRUNNING FUNCTION: {0}.{1}".format(test_name, f)
+            print "\nRUNNING FUNCTION: {0}.{1}".format(str(test_name), str(f))
 
             _program_time = numpy.array(iters*[0,])
             _all_blocks_time = numpy.array(iters*[0,])

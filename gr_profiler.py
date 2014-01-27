@@ -23,7 +23,7 @@ def def_gci():      # GNU Radio Compiler Information
     return cflags + "\n" + cc_ver
 
 # stdout -> return (helper)
-def shellexec_getout(cmd, throw_ex=True, print_live=True):
+def shellexec_getout(cmd, throw_ex=True, print_live=True, print_err=False):
     print "shellexec_long: " + str(cmd);
     try:
         p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE);
@@ -34,6 +34,9 @@ def shellexec_getout(cmd, throw_ex=True, print_live=True):
             if print_live:
                 print ln;
             out = out + ln;
+        if print_err:
+            err = p.stderr.read();
+            print err;
         return out;
     except Exception, e:
         if(throw_ex):
@@ -135,18 +138,19 @@ def main():
                       help="disable Waveform benchmarks")
     (options, args) = parser.parse_args();
 
-    # first run volk tests
+    # run waveform measurements 
+    if(options.dw):
+        print "executing GR waveform benchmarks ..."
+        wfperf = shellexec_getout("python benchmarking.py -F gr_profiler.json -o profile_results.dat",print_err=True);
+    else:
+        wfperf = "";
+
+    # run volk measurements
     if(options.dv):
         print "executing volk_profile ..."
         perf = shellexec_getout("volk_profile -b 1");
     else:
         perf = "";
-
-    if(options.dw):
-        print "executing GR waveform benchmarks ..."
-        wfperf = "wf perf placeholder"
-    else:
-        wfperf = "";
 
     # compile results
     ci = cpuinfo();
