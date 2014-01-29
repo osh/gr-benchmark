@@ -2,6 +2,8 @@
 import sys, subprocess, os, re, shlex
 from optparse import OptionParser
 from ctypes.util import find_library
+import cPickle as pickle
+import json
 
 # make sure we have access to required GR python modules
 try:
@@ -141,8 +143,13 @@ def main():
     # run waveform measurements 
     if(options.dw):
         print "executing GR waveform benchmarks ..."
-        wfperf = shellexec_getout("python benchmarking.py -F gr_profiler.json -o profile_results.dat",print_err=True);
+        results_fname = "profile_results.dat"
+        wfstdout = shellexec_getout("python benchmarking.py -F gr_profiler.json -o %s"%(results_fname),print_err=True);
+        with open(results_fname,"rb") as fp:
+            wfperf = pickle.load(fp);
+        wfperf = json.dumps(wfperf);
     else:
+        print "wfperf failed!"
         wfperf = "";
 
     # run volk measurements
