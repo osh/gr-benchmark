@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 
-import Ice
 import sys, re, time, random, pprint
-import numpy, pylab
+import numpy
 import json
 import cPickle as pickle
 from argparse import ArgumentParser
 
 from gnuradio import gr
-from gnuradio.ctrlport import GNURadio
-from gnuradio import ctrlport
+
+enable_ctrlport = True
+try:
+    import Ice
+    from gnuradio.ctrlport import GNURadio
+    from gnuradio import ctrlport
+except:
+    enable_ctrlport = False
 
 import gr_profiler
 
@@ -81,7 +86,9 @@ def main():
     verbose = args.verbose
     kwargs = {}
 
-    ic = Ice.initialize(sys.argv)
+    ic = None
+    if enable_ctrlport: 
+        ic = Ice.initialize(sys.argv)
 
     if(args.file is None and args.iscripts is None):
         print "Please specify either a config file or a list of scripts to run.\n"
@@ -175,7 +182,9 @@ def main():
 
                 _program_time[i] = _end_time - _start_time
 
-                times = get_block_times(ic, obj.tb._tb.alias())
+                times = {}
+                if(enable_ctrlport)
+                    times = get_block_times(ic, obj.tb._tb.alias())
 
                 if _nblocks == 0:
                     n = len(times.keys())
