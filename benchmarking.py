@@ -183,7 +183,7 @@ def main():
                 _program_time[i] = _end_time - _start_time
 
                 times = {}
-                if(enable_ctrlport)
+                if enable_ctrlport:
                     times = get_block_times(ic, obj.tb._tb.alias())
 
                 if _nblocks == 0:
