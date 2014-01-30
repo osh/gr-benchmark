@@ -16,7 +16,30 @@
      "testname": "bm_noise",
      "nitems": 10000,
      "iters": 100
-     }
+     },
 
+     {
+     "module": "bm_fir_filters",
+     "testname": "fir_filters_equal",
+     "nitems": 100000,
+     "iters": 5,
+     "kwargs": {
+        "mfirs": 8,
+        "ntaps": 10000
+        }
+     },
+
+     {
+     "module": "bm_fir_filters",
+     "testname": "fir_filters_nonequal",
+     "nitems": 100000,
+     "iters": 5,
+     "kwargs": {
+         "mfirs": 8,
+         "ntaps": 10000,
+         "mult": 10
+        }
+    }
 ]
 }
+
