@@ -8,7 +8,6 @@ import json
 # make sure we have access to required GR python modules
 try:
     from gnuradio import gr;
-    import volk_modtool;
 except:
     print "Can not import GNU Radio or VOLK Modtool, please ensure your environment is set up."
     sys.exit(-1);
