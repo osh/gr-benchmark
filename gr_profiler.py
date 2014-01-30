@@ -24,6 +24,9 @@ def def_gci():      # GNU Radio Compiler Information
     cc_ver = shellexec_getout("gnuradio-config-info --cc")
     return cflags + "\n" + cc_ver
 
+def def_grv():      # VOLK Compiler Information
+    return shellexec_getout("gnuradio-config-info --version", print_live=False)
+
 # stdout -> return (helper)
 def shellexec_getout(cmd, throw_ex=True, print_live=True, print_err=False):
     print "shellexec_long: " + str(cmd);
@@ -132,6 +135,9 @@ def main():
     parser.add_option("-g", "--gr-compiler-info",
                       action="store", dest="gci", default=def_gci(),
                       help="compiler info file for GNU Radio")
+    parser.add_option("-V", "--gr-version",
+                      action="store", dest="grv", default=def_grv(),
+                      help="GNU Radio version")
     parser.add_option("-a", "--disable-volk",
                       action="store_false", dest="dv", default=True,
                       help="disable VOLK benchmarks")
@@ -162,7 +168,7 @@ def main():
     # compile results
     ci = cpuinfo();
     kn = kversion();
-    results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci};
+    results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci, "grv":options.grv};
     print "results: %s"%( results );
 
     #submit performance statistics
