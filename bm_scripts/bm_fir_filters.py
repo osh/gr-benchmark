@@ -23,7 +23,7 @@ class fir_filters_equal:
         for m in xrange(self.mfirs):
             taps = numpy.random.random(self.ntaps)
             self.blocks.append(filter.fir_filter_fff(1, taps))
-            self.blocks[m].set_processor_affinity([m,])
+            #self.blocks[m].set_processor_affinity([m,])
 
         # Add a null sink
         self.blocks.append(blocks.null_sink(gr.sizeof_float))
@@ -42,7 +42,7 @@ class fir_filters_equal:
         for m in xrange(self.mfirs):
             taps = numpy.random.random(self.ntaps)
             self.blocks.append(filter.fir_filter_ccf(1, taps))
-            self.blocks[m].set_processor_affinity([m,])
+            #self.blocks[m].set_processor_affinity([m,])
 
         # Add a null sink
         self.blocks.append(blocks.null_sink(gr.sizeof_gr_complex))
@@ -77,13 +77,13 @@ class fir_filters_nonequal:
         for m in xrange(1, self.mfirs):
             taps = numpy.random.random(self.ntaps)
             self.blocks.append(filter.fir_filter_fff(1, taps))
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
-        self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
+        #self.blocks[m].set_processor_affinity([1,])
 
         # Add a null sink
         self.blocks.append(blocks.null_sink(gr.sizeof_float))
