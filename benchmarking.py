@@ -193,9 +193,13 @@ def main():
                         _blocks_times[bt] = numpy.array(iters*[0,])
 
                 _nblocks = len(times.keys())
-                for bt in times:
-                    _all_blocks_time[i] += times[bt]
-                    _blocks_times[bt][i] = times[bt]
+                for bt, time in times.items():
+                    _all_blocks_time[i] += time
+                    try:
+                        _blocks_times[bt][i] = time
+                    except KeyError as ke:
+                        _blocks_times[bt] = numpy.array([0,]*iters)
+                        _blocks_times[bt][i] = time
 
             pt_min = _program_time.min()/tpms
             pt_avg = _program_time.mean()/tpms
