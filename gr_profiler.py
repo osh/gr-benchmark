@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, subprocess, os, re, shlex
-from optparse import OptionParser
+import argparse
+from argparse import ArgumentParser
 from ctypes.util import find_library
 import cPickle as pickle
 import json
@@ -124,26 +125,28 @@ def kversion():
 
 def main():
     # parse args
-    parser = OptionParser()
-    parser.add_option("-s", "--submit",
+    parser = ArgumentParser()
+    parser.add_argument("-s", "--submit",
                       action="store_true", dest="submit", default=False,
                       help="submit results to stats.gnuradio.org")
-    parser.add_option("-v", "--volk-compiler-info",
+    parser.add_argument("-v", "--volk-compiler-info",
                       action="store", dest="vci", default=def_vci(),
                       help="compiler info file for volk")
-    parser.add_option("-g", "--gr-compiler-info",
+    parser.add_argument("-g", "--gr-compiler-info",
                       action="store", dest="gci", default=def_gci(),
                       help="compiler info file for GNU Radio")
-    parser.add_option("-V", "--gr-version",
+    parser.add_argument("-V", "--gr-version",
                       action="store", dest="grv", default=def_grv(),
                       help="GNU Radio version")
-    parser.add_option("-a", "--disable-volk",
+    parser.add_argument("-a", "--disable-volk",
                       action="store_false", dest="dv", default=True,
                       help="disable VOLK benchmarks")
-    parser.add_option("-b", "--disable-waveforms",
+    parser.add_argument("-b", "--disable-waveforms",
                       action="store_false", dest="dw", default=True,
                       help="disable Waveform benchmarks")
-    (options, args) = parser.parse_args();
+    parser.add_argument("-r", "--results-file",
+                      type=argparse.FileType('w'), default=sys.stdout)
+    options = parser.parse_args()
 
     # run waveform measurements 
     if(options.dw):
@@ -168,7 +171,7 @@ def main():
     ci = cpuinfo();
     kn = kversion();
     results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci, "grv":options.grv};
-    print "results: %s"%( results );
+    options.results_file.write( json.dumps(results) )
 
     #submit performance statistics
     if(options.submit):
@@ -180,5 +183,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
