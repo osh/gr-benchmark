@@ -8,10 +8,10 @@ import json
 
 # make sure we have access to required GR python modules
 try:
-    from gnuradio import gr;
+    from gnuradio import gr
 except:
     print "Can not import GNU Radio or VOLK Modtool, please ensure your environment is set up."
-    sys.exit(-1);
+    sys.exit(-1)
     
 # get compiler info stored at compile time
 def def_vci():      # VOLK Compiler Information
@@ -29,31 +29,31 @@ def def_grv():      # VOLK Compiler Information
 
 # stdout -> return (helper)
 def shellexec_getout(cmd, throw_ex=True, print_live=True, print_err=False):
-    print "shellexec_long: " + str(cmd);
+    print "shellexec_long: " + str(cmd)
     try:
-        p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE);
-        ln = "PH";
+        p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        ln = "PH"
         out = ""
         while not (ln == ""):
-            ln = p.stdout.readline().rstrip('\n');
+            ln = p.stdout.readline().rstrip('\n')
             if print_live:
-                print ln;
-            out = out + ln;
+                print ln
+            out = out + ln
         if print_err:
-            err = p.stderr.read();
-            print err;
-        return out;
+            err = p.stderr.read()
+            print err
+        return out
     except Exception, e:
         if(throw_ex):
-            raise e;
+            raise e
         else:
-            return -1;
+            return -1
 
 # we get cpu info directly after VOLK benchmarks in the hope that the cpu clock is still maxed out
 def cpuinfo():
     if(os.path.isfile("/proc/cpuinfo")):
-        ci = open("/proc/cpuinfo", "r");
-        return ci.read();
+        ci = open("/proc/cpuinfo", "r")
+        return ci.read()
     else:
         try:
 # hw.ncpu = 24
@@ -105,7 +105,7 @@ def cpuinfo():
             
         except:
             print "do something else for OSX/Windows here"
-            sys.exit(-1);
+            sys.exit(-1)
 
 def mversion():
     # MEMINFO?
@@ -117,11 +117,11 @@ def kversion():
     # kern.osrevision = 199506
     # kern.version = Darwin Kernel Version 13.0.0: Thu Sep 19 22:22:27 PDT 2013; root:xnu-2422.1.72~6/RELEASE_X86_64
     try:
-        kn = open("/proc/version", "r");
-        return kn.read();
+        kn = open("/proc/version", "r")
+        return kn.read()
     except:
         print "do something else for OSX/Windows here"
-        sys.exit(-1);
+        sys.exit(-1)
 
 def main():
     # parse args
@@ -152,33 +152,33 @@ def main():
     if(options.dw):
         print "executing GR waveform benchmarks ..."
         results_fname = "profile_results.dat"
-        wfstdout = shellexec_getout("python benchmarking.py -F gr_profiler.json -o %s"%(results_fname),print_err=True);
+        wfstdout = shellexec_getout("python benchmarking.py -F gr_profiler.json -o %s"%(results_fname),print_err=True)
         with open(results_fname,"rb") as fp:
-            wfperf = pickle.load(fp);
-        wfperf = json.dumps(wfperf);
+            wfperf = pickle.load(fp)
+        wfperf = json.dumps(wfperf)
     else:
         print "wfperf failed!"
-        wfperf = "";
+        wfperf = ""
 
     # run volk measurements
     if(options.dv):
         print "executing volk_profile ..."
-        perf = shellexec_getout("volk_profile -b 1");
+        perf = shellexec_getout("volk_profile -b 1")
     else:
-        perf = "";
+        perf = ""
 
     # compile results
-    ci = cpuinfo();
-    kn = kversion();
-    results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci, "grv":options.grv};
+    ci = cpuinfo()
+    kn = kversion()
+    results = {"k":kn,"ci":ci, "perf":perf, "wfperf":wfperf, "vci":options.vci, "gci":options.gci, "grv":options.grv}
     options.results_file.write( json.dumps(results) )
 
     #submit performance statistics
     if(options.submit):
         print "submitting benchmark statistics to stats.gnuradio.org: "
-        import urllib;
-        uo = urllib.URLopener();
-        uo.open("http://stats.gnuradio.org/submit",urllib.urlencode(results));
+        import urllib
+        uo = urllib.URLopener()
+        uo.open("http://stats.gnuradio.org/submit",urllib.urlencode(results))
         print "done."
 
 if __name__ == "__main__":
