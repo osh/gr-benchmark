@@ -13,7 +13,7 @@ dependencies:
 repo: https://github.com/osh/gr-benchmark.git
 stable_release: HEAD
 website: http://stats.gnuradio.org/
-icon: http://i3.kym-cdn.com/photos/images/masonry/000/674/934/422.jpg
+icon: http://dl.maximumpc.com/galleries/benchmarking/stopwatch_405.jpg
 ---
 
 # Running the benchmark
